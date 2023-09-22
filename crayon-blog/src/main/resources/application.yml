@@ -1,0 +1,6 @@
+server:
+  port: 8081
+spring:
+  profiles:
+    # 多环境配置切换
+    active: test
