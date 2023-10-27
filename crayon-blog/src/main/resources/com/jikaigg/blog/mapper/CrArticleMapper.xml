@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jikaigg.blog.mapper.CrArticleMapper">
+
+    <resultMap type="com.jikaigg.blog.domain.CrArticle" id="CrArticleMap">
+        <result property="articleId" column="article_id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="authorId" column="author_id" jdbcType="INTEGER"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="publishedDate" column="published_date" jdbcType="TIMESTAMP"/>
+        <result property="views" column="views" jdbcType="INTEGER"/>
+        <result property="likes" column="likes" jdbcType="INTEGER"/>
+        <result property="featured" column="featured" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CrArticleMap">
+        select
+          article_id, title, content, author_id, category_id, published_date, views, likes, featured
+        from cr_article
+        where article_id = #{articleId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CrArticleMap">
+        select
+          article_id, title, content, author_id, category_id, published_date, views, likes, featured
+        from cr_article
+        <where>
+            <if test="articleId != null">
+                and article_id = #{articleId}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="authorId != null">
+                and author_id = #{authorId}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="publishedDate != null">
+                and published_date = #{publishedDate}
+            </if>
+            <if test="views != null">
+                and views = #{views}
+            </if>
+            <if test="likes != null">
+                and likes = #{likes}
+            </if>
+            <if test="featured != null">
+                and featured = #{featured}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from cr_article
+        <where>
+            <if test="articleId != null">
+                and article_id = #{articleId}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="authorId != null">
+                and author_id = #{authorId}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="publishedDate != null">
+                and published_date = #{publishedDate}
+            </if>
+            <if test="views != null">
+                and views = #{views}
+            </if>
+            <if test="likes != null">
+                and likes = #{likes}
+            </if>
+            <if test="featured != null">
+                and featured = #{featured}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="articleId" useGeneratedKeys="true">
+        insert into cr_article(title, content, author_id, category_id, published_date, views, likes, featured)
+        values (#{title}, #{content}, #{authorId}, #{categoryId}, #{publishedDate}, #{views}, #{likes}, #{featured})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="articleId" useGeneratedKeys="true">
+        insert into cr_article(title, content, author_id, category_id, published_date, views, likes, featured)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.title}, #{entity.content}, #{entity.authorId}, #{entity.categoryId}, #{entity.publishedDate}, #{entity.views}, #{entity.likes}, #{entity.featured})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="articleId" useGeneratedKeys="true">
+        insert into cr_article(title, content, author_id, category_id, published_date, views, likes, featured)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.content}, #{entity.authorId}, #{entity.categoryId}, #{entity.publishedDate}, #{entity.views}, #{entity.likes}, #{entity.featured})
+        </foreach>
+        on duplicate key update
+        title = values(title),
+        content = values(content),
+        author_id = values(author_id),
+        category_id = values(category_id),
+        published_date = values(published_date),
+        views = values(views),
+        likes = values(likes),
+        featured = values(featured)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cr_article
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="authorId != null">
+                author_id = #{authorId},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="publishedDate != null">
+                published_date = #{publishedDate},
+            </if>
+            <if test="views != null">
+                views = #{views},
+            </if>
+            <if test="likes != null">
+                likes = #{likes},
+            </if>
+            <if test="featured != null">
+                featured = #{featured},
+            </if>
+        </set>
+        where article_id = #{articleId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from cr_article where article_id = #{articleId}
+    </delete>
+
+</mapper>
+

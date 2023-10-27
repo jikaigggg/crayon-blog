@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jikaigg.blog.mapper.CrCommentMapper">
+
+    <resultMap type="com.jikaigg.blog.domain.CrComment" id="CrCommentMap">
+        <result property="commentId" column="comment_id" jdbcType="INTEGER"/>
+        <result property="articleId" column="article_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="parentCommentId" column="parent_comment_id" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="commentDate" column="comment_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CrCommentMap">
+        select
+          comment_id, article_id, user_id, parent_comment_id, content, comment_date
+        from cr_comment
+        where comment_id = #{commentId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CrCommentMap">
+        select
+          comment_id, article_id, user_id, parent_comment_id, content, comment_date
+        from cr_comment
+        <where>
+            <if test="commentId != null">
+                and comment_id = #{commentId}
+            </if>
+            <if test="articleId != null">
+                and article_id = #{articleId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="parentCommentId != null">
+                and parent_comment_id = #{parentCommentId}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="commentDate != null">
+                and comment_date = #{commentDate}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from cr_comment
+        <where>
+            <if test="commentId != null">
+                and comment_id = #{commentId}
+            </if>
+            <if test="articleId != null">
+                and article_id = #{articleId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="parentCommentId != null">
+                and parent_comment_id = #{parentCommentId}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="commentDate != null">
+                and comment_date = #{commentDate}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="commentId" useGeneratedKeys="true">
+        insert into cr_comment(article_id, user_id, parent_comment_id, content, comment_date)
+        values (#{articleId}, #{userId}, #{parentCommentId}, #{content}, #{commentDate})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="commentId" useGeneratedKeys="true">
+        insert into cr_comment(article_id, user_id, parent_comment_id, content, comment_date)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.articleId}, #{entity.userId}, #{entity.parentCommentId}, #{entity.content}, #{entity.commentDate})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="commentId" useGeneratedKeys="true">
+        insert into cr_comment(article_id, user_id, parent_comment_id, content, comment_date)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.articleId}, #{entity.userId}, #{entity.parentCommentId}, #{entity.content}, #{entity.commentDate})
+        </foreach>
+        on duplicate key update
+        article_id = values(article_id),
+        user_id = values(user_id),
+        parent_comment_id = values(parent_comment_id),
+        content = values(content),
+        comment_date = values(comment_date)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cr_comment
+        <set>
+            <if test="articleId != null">
+                article_id = #{articleId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="parentCommentId != null">
+                parent_comment_id = #{parentCommentId},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="commentDate != null">
+                comment_date = #{commentDate},
+            </if>
+        </set>
+        where comment_id = #{commentId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from cr_comment where comment_id = #{commentId}
+    </delete>
+
+</mapper>
+

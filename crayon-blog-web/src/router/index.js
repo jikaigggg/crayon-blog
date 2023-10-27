@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Layout from '../views/layout'
 
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes: [
-    { path: '/', component: HomeView }
+    { path: '/home', component: Layout },
+    { path: '/', component: Layout }
   ]
 })
 
