@@ -6,9 +6,3 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: yaojikai2
-  # redis 配置
-  redis:
-    host: localhost
-    port: 6379
-    password: yaojikai2
-    database: 0
