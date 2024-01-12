@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jikaigg.blog.mapper.UserMapper">
+
+    <resultMap type="com.jikaigg.blog.domain.User" id="UserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="nickname" column="unickname" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="userPic" column="user_pic" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="findByUsername" resultMap="UserMap">
+        select
+          username, password, nickname, email, user_pic,  create_time,update_time
+        from user
+        where username = #{username}
+    </select>
+
+
+    <!--新增-->
+    <insert id="add" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(username, password, create_time, update_time)
+        values (#{username}, #{password}, now(), now())
+    </insert>
+
+    <!--通过主键修改数据-->
+<!--    <update id="update">-->
+<!--        update cr_user-->
+<!--        <set>-->
+<!--            <if test="username != null and username != ''">-->
+<!--                username = #{username},-->
+<!--            </if>-->
+<!--            <if test="email != null and email != ''">-->
+<!--                email = #{email},-->
+<!--            </if>-->
+<!--            <if test="password != null and password != ''">-->
+<!--                password = #{password},-->
+<!--            </if>-->
+<!--            <if test="registrationDate != null">-->
+<!--                registration_date = #{registrationDate},-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where user_id = #{userId}-->
+<!--    </update>-->
+
+    <!--通过主键删除-->
+<!--    <delete id="deleteById">-->
+<!--        delete from cr_user where user_id = #{userId}-->
+<!--    </delete>-->
+
+</mapper>
+
