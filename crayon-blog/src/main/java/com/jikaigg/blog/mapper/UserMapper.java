@@ -8,4 +8,6 @@ public interface UserMapper {
     User findByUsername(String username);
 
     int add(String username,String password);
+
+    int update(User user);
 }

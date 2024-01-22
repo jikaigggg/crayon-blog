@@ -18,4 +18,11 @@ public interface UserService {
      * @param password
      */
     void register(String username, String password);
+
+    /**
+     * 更新用户
+     * @param user
+     * @return
+     */
+    int update(User user);
 }

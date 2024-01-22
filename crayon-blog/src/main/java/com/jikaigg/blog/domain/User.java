@@ -1,7 +1,7 @@
 package com.jikaigg.blog.domain;
 
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 public class User {
     private Integer id;//主键ID
     private String username;//用户名
+    // 序列化忽略属性
+    @JsonIgnore
     private String password;//密码
     private String nickname;//昵称
     private String email;//邮箱
