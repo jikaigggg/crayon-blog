@@ -25,4 +25,8 @@ public interface UserService {
      * @return
      */
     int update(User user);
+
+    void updateAvatar(String avatarUrl);
+
+    void updatePwd(String newPwd);
 }

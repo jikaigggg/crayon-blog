@@ -8,6 +8,8 @@ import com.jikaigg.blog.utils.Md5Util;
 import com.jikaigg.blog.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
 import org.apache.ibatis.annotations.Param;
+import org.hibernate.validator.constraints.URL;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,5 +93,35 @@ public class UserController {
         }
         return CrResult.fail("000009", "更新用户信息失败");
 
+    }
+
+    @PatchMapping("/updateAvatar")
+    public CrResult updateAvatar(@RequestParam @URL String avatarUrl) {
+        userService.updateAvatar(avatarUrl);
+        return CrResult.success(null);
+    }
+
+    @PatchMapping("/updatePwd")
+    public CrResult updatePwd(@RequestBody Map<String, String> params) {
+        // 校验参数
+        String oldPwd = params.get("old_pwd");
+        String newPwd = params.get("new_pwd");
+        String rePwd = params.get("re_pwd");
+        if (!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
+            return CrResult.fail("00000009", "参数不能为空");
+        }
+        // 校验原密码是否准确
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        String username = (String) claims.get("username");
+        User curUser = userService.findByUsername(username);
+        if (!curUser.getPassword().equals(Md5Util.getMD5String(oldPwd))) {
+            return CrResult.fail("00000009", "原密码输入不正确");
+        }
+        if (!newPwd.equals(rePwd)){
+            return CrResult.fail("00000009", "新密码两次输入不相同");
+        }
+        // 更新密码
+        userService.updatePwd(newPwd);
+        return CrResult.success(null);
     }
 }

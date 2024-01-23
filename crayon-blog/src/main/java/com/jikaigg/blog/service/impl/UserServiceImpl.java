@@ -4,9 +4,11 @@ import com.jikaigg.blog.domain.User;
 import com.jikaigg.blog.mapper.UserMapper;
 import com.jikaigg.blog.service.UserService;
 import com.jikaigg.blog.utils.Md5Util;
+import com.jikaigg.blog.utils.ThreadLocalUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,5 +30,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public int update(User user) {
         return userMapper.update(user);
+    }
+
+    @Override
+    public void updateAvatar(String avatarUrl) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer id = (Integer) claims.get("id");
+        userMapper.updateAvatar(id, avatarUrl);
+    }
+
+    @Override
+    public void updatePwd(String newPwd) {
+        String md5String = Md5Util.getMD5String(newPwd);
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer id = (Integer) claims.get("id");
+        userMapper.updatePwd(id,md5String);
     }
 }

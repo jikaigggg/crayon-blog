@@ -17,9 +17,9 @@ public class JWTTest {
      * 生成jwt
      */
     @Test
-    public void test(){
-        Map<String,Object> clainms = new HashMap<>();
-        clainms.put("name","zhangsan");
+    public void test() {
+        Map<String, Object> clainms = new HashMap<>();
+        clainms.put("name", "zhangsan");
         String sign = JWT.create()
                 .withClaim("user", clainms)  // 添加载荷
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 12))   // 添加过期时间
@@ -31,12 +31,12 @@ public class JWTTest {
      * 验证jwt
      */
     @Test
-    public void test2(){
-        String jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MDU2MTAxNTQsInVzZXIiOnsibmFtZSI6InpoYW5nc2FuIn19.Ugj5lhABmGfHg21pOKPW3-GA7v7kuoYon5gU1CuMd94";
+    public void test2() {
+        String jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGFpbXMiOnsiaWQiOm51bGwsInVzZXJuYW1lIjoieWFvamlrYWkifSwiZXhwIjoxNzA2MDIxMzQ2fQ.DbKtPJB38xxbx-njc20pmcyLqtHaLwI8Et4lZ9ev0Dk";
         JWTVerifier jikaigggg = JWT.require(Algorithm.HMAC256("jikaigggg")).build();
         DecodedJWT verify = jikaigggg.verify(jwt);
         Map<String, Claim> claims = verify.getClaims();
-        System.out.println(claims.get("user"));
+        System.out.println(claims.get("id"));
 
     }
 

@@ -3,7 +3,7 @@
 <mapper namespace="com.jikaigg.blog.mapper.UserMapper">
 
     <resultMap type="com.jikaigg.blog.domain.User" id="UserMap">
-        <result property="id" column="id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
@@ -16,14 +16,14 @@
     <!--查询单个-->
     <select id="findByUsername" resultMap="UserMap">
         select
-          username, password, nickname, email, user_pic,  create_time, update_time
+          id, username, password, nickname, email, user_pic,  create_time, update_time
         from user
         where username = #{username}
     </select>
 
 
     <!--新增-->
-    <insert id="add" keyProperty="userId" useGeneratedKeys="true">
+    <insert id="add" parameterType="java.lang.String">
         insert into user(username, password, create_time, update_time)
         values (#{username}, #{password}, now(), now())
     </insert>
@@ -40,6 +40,16 @@
                 update_time = now()
         </set>
         where username = #{username}
+    </update>
+
+    <update id="updateAvatar">
+        update user set user_pic = #{avatarUrl}, update_time = now()
+        where id = #{id}
+    </update>
+
+    <update id="updatePwd">
+        update user set password = #{md5String}, update_time = now()
+        where id = #{id}
     </update>
 
     <!--通过主键删除-->

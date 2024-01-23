@@ -10,4 +10,8 @@ public interface UserMapper {
     int add(String username,String password);
 
     int update(User user);
+
+    int updateAvatar(Integer id ,String avatarUrl);
+
+    int updatePwd(Integer id,String md5String);
 }
