@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.jikaigg.blog.utils.Md5Util;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -38,6 +39,12 @@ public class JWTTest {
         Map<String, Claim> claims = verify.getClaims();
         System.out.println(claims.get("id"));
 
+    }
+
+    @Test
+    public void test3(){
+        String md5String = Md5Util.getMD5String("testtest");
+        System.out.println(md5String);
     }
 
 }

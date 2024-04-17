@@ -7,8 +7,9 @@ import com.jikaigg.blog.utils.JwtUtil;
 import com.jikaigg.blog.utils.Md5Util;
 import com.jikaigg.blog.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
-import org.apache.ibatis.annotations.Param;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RequestMapping("/user")
 @RestController
@@ -24,6 +26,9 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 用户注册
@@ -65,6 +70,10 @@ public class UserController {
             claims.put("username", curUser.getUsername());
             // 返回JWT令牌
             String token = JwtUtil.genToken(claims);
+            // 存redis
+            ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+            operations.set(token,token,1, TimeUnit.HOURS);
+
             return CrResult.success(token);
         }
         return CrResult.fail("000002", "密码错误");
@@ -85,6 +94,11 @@ public class UserController {
 
     }
 
+    /**
+     * 更新用户信息
+     * @param user
+     * @return
+     */
     @PutMapping("update")
     public CrResult update(@RequestBody User user) {
         int update = userService.update(user);
@@ -95,14 +109,24 @@ public class UserController {
 
     }
 
+    /**
+     * 更新用户头像
+     * @param avatarUrl
+     * @return
+     */
     @PatchMapping("/updateAvatar")
     public CrResult updateAvatar(@RequestParam @URL String avatarUrl) {
         userService.updateAvatar(avatarUrl);
         return CrResult.success(null);
     }
 
+    /**
+     * 更新密码
+     * @param params
+     * @return
+     */
     @PatchMapping("/updatePwd")
-    public CrResult updatePwd(@RequestBody Map<String, String> params) {
+    public CrResult updatePwd(@RequestBody Map<String, String> params ,@RequestHeader("Authrization") String token) {
         // 校验参数
         String oldPwd = params.get("old_pwd");
         String newPwd = params.get("new_pwd");
@@ -117,11 +141,14 @@ public class UserController {
         if (!curUser.getPassword().equals(Md5Util.getMD5String(oldPwd))) {
             return CrResult.fail("00000009", "原密码输入不正确");
         }
-        if (!newPwd.equals(rePwd)){
+        if (!newPwd.equals(rePwd)) {
             return CrResult.fail("00000009", "新密码两次输入不相同");
         }
         // 更新密码
         userService.updatePwd(newPwd);
+        // 密码更新成功后删除旧token
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        Boolean delete = operations.getOperations().delete(token);
         return CrResult.success(null);
     }
 }

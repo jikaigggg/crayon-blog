@@ -7,8 +7,12 @@ import com.jikaigg.blog.utils.ThreadLocalUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * 分类操作service
+ */
 @Service
 public class CategoryServiceImpl implements CategoryService {
     @Resource
@@ -20,5 +24,22 @@ public class CategoryServiceImpl implements CategoryService {
         Integer id = (Integer) claims.get("id");
         category.setCreateUser(id);
         categoryMapper.add(category);
+    }
+
+    @Override
+    public List<Category> list() {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer id = (Integer) claims.get("id");
+        return categoryMapper.list(id);
+    }
+
+    @Override
+    public int update(Category category) {
+        return categoryMapper.update(category);
+    }
+
+    @Override
+    public int delete(Integer id) {
+        return categoryMapper.delete(id);
     }
 }

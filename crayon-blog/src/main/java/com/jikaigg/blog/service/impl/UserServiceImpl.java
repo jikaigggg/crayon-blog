@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Map;
 
+/**
+ * 用户操作service
+ */
 @Service
 public class UserServiceImpl implements UserService {
     @Resource
@@ -44,6 +47,6 @@ public class UserServiceImpl implements UserService {
         String md5String = Md5Util.getMD5String(newPwd);
         Map<String, Object> claims = ThreadLocalUtil.get();
         Integer id = (Integer) claims.get("id");
-        userMapper.updatePwd(id,md5String);
+        userMapper.updatePwd(id, md5String);
     }
 }
