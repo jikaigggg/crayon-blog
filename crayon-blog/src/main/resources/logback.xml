@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日志文件路径:绝对路径，根目录下的logs文件夹 -->
+<!--        <file>/logs/spring-boot-log.log</file>-->
+        <!-- 日志文件路径:相对路径，获取项目路径，logs文件夹 -->
+        <file>${user.dir}/logs/spring-boot-log.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志文件名格式:绝对路径 -->
+<!--            <fileNamePattern>/logs/spring-boot-log.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+            <!-- 日志文件名格式:相对路径 -->
+            <fileNamePattern>${user.dir}/logs/spring-boot-log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 保留最近30天的日志 -->
+            <maxHistory>30</maxHistory>
+            <!-- 文件大小限制，如果超过会滚动 -->
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 设置日志级别 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- 设置特定包的日志级别 -->
+<!--    <logger name="com.example.projectname" level="DEBUG"/>-->
+
+</configuration>
